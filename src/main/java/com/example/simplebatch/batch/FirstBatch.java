@@ -5,8 +5,6 @@ import com.example.simplebatch.entity.AfterEntity;
 import com.example.simplebatch.entity.BeforeEntity;
 import com.example.simplebatch.repository.AfterRepository;
 import com.example.simplebatch.repository.BeforeRepository;
-import org.hibernate.dialect.unique.CreateTableUniqueDelegate;
-import org.jspecify.annotations.Nullable;
 import org.springframework.batch.core.job.Job;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
@@ -14,7 +12,9 @@ import org.springframework.batch.core.step.Step;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.infrastructure.item.ItemProcessor;
 import org.springframework.batch.infrastructure.item.data.RepositoryItemReader;
+import org.springframework.batch.infrastructure.item.data.RepositoryItemWriter;
 import org.springframework.batch.infrastructure.item.data.builder.RepositoryItemReaderBuilder;
+import org.springframework.batch.infrastructure.item.data.builder.RepositoryItemWriterBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
@@ -47,7 +47,7 @@ public class FirstBatch {
         System.out.println("fist job");
 
         return new JobBuilder("first job", jobRepository)
-                .start()
+                .start(firstStep())
                 .build();
 
     }
@@ -58,7 +58,7 @@ public class FirstBatch {
                 .<BeforeEntity, AfterEntity> chunk(10, platformTransactionManager)
                 .reader(beforeReader())
                 .processor(middleProcessor())
-                .writer()
+                .writer(afterWriter())
                 .build();
 
     }
@@ -88,5 +88,13 @@ public class FirstBatch {
                 return afterEntity;
             }
         };
+    }
+
+    @Bean
+    public RepositoryItemWriter<AfterEntity> afterWriter() {
+        return new RepositoryItemWriterBuilder<AfterEntity>()
+                .repository(afterRepository)  // 를 통해서
+                .methodName("save")  // save 메소드를 날릴 것
+                .build();
     }
 }
