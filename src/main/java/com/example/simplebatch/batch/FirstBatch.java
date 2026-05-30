@@ -5,11 +5,14 @@ import com.example.simplebatch.entity.AfterEntity;
 import com.example.simplebatch.entity.BeforeEntity;
 import com.example.simplebatch.repository.AfterRepository;
 import com.example.simplebatch.repository.BeforeRepository;
+import org.hibernate.dialect.unique.CreateTableUniqueDelegate;
+import org.jspecify.annotations.Nullable;
 import org.springframework.batch.core.job.Job;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.Step;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.infrastructure.item.ItemProcessor;
 import org.springframework.batch.infrastructure.item.data.RepositoryItemReader;
 import org.springframework.batch.infrastructure.item.data.builder.RepositoryItemReaderBuilder;
 import org.springframework.context.annotation.Bean;
@@ -54,7 +57,7 @@ public class FirstBatch {
         return new StepBuilder("firstStep", jobRepository)
                 .<BeforeEntity, AfterEntity> chunk(10, platformTransactionManager)
                 .reader(beforeReader())
-                .processor()
+                .processor(middleProcessor())
                 .writer()
                 .build();
 
@@ -71,4 +74,19 @@ public class FirstBatch {
                 .build();
     }
 
+    @Bean
+    public ItemProcessor<BeforeEntity, AfterEntity> middleProcessor() {
+
+        return new ItemProcessor<BeforeEntity, AfterEntity>() {
+
+            @Override
+            public AfterEntity process(BeforeEntity item) throws Exception {
+
+                AfterEntity afterEntity = new AfterEntity();
+                afterEntity.setUsername(item.getUsername());
+
+                return afterEntity;
+            }
+        };
+    }
 }
