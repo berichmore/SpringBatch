@@ -20,7 +20,7 @@ public class MetaDBConfig {
     @ConfigurationProperties(prefix = "spring.datasource-meta")
     public DataSource metaDBSource() {
 
-        return DataSourceBuilder.create().build();
+        return DataSourceBuilder.create().build(); // Spring Boot 2.x 방식
     }
 
     @Primary
