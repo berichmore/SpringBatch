@@ -1,6 +1,7 @@
 package com.example.simplebatch.schedule;
 
 import org.springframework.batch.core.configuration.JobRegistry;
+import org.springframework.batch.core.job.Job;
 import org.springframework.batch.core.job.parameters.JobParameters;
 import org.springframework.batch.core.job.parameters.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
@@ -16,11 +17,11 @@ public class FirstSchedule {
 
     private final JobLauncher jobLauncher;
 
-    private final JobRegistry jobRegistry;
+    private final Job firstJob;
 
-    public FirstSchedule(JobLauncher jobLauncher, JobRegistry jobRegistry) {
-        this.jobRegistry = jobRegistry;
+    public FirstSchedule(JobLauncher jobLauncher, JobLauncher jobLauncher1, Job firstJob) {
         this.jobLauncher = jobLauncher;
+        this.firstJob = firstJob;
     }
 
 
@@ -45,7 +46,7 @@ public class FirstSchedule {
                 .addString("date", date)
                 .toJobParameters();
 
-        jobLauncher.run(jobRegistry.getJob("firstJob"), jobParameters);
+        jobLauncher.run(firstJob, jobParameters);
 
     }
 }

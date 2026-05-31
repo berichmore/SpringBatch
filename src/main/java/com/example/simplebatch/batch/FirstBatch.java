@@ -15,11 +15,13 @@ import org.springframework.batch.infrastructure.item.data.RepositoryItemReader;
 import org.springframework.batch.infrastructure.item.data.RepositoryItemWriter;
 import org.springframework.batch.infrastructure.item.data.builder.RepositoryItemReaderBuilder;
 import org.springframework.batch.infrastructure.item.data.builder.RepositoryItemWriterBuilder;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 @Configuration
@@ -32,7 +34,7 @@ public class FirstBatch {
 
     public FirstBatch(
             JobRepository jobRepository,
-            PlatformTransactionManager platformTransactionManager,
+            @Qualifier("dataTransactionManager") PlatformTransactionManager platformTransactionManager,
             BeforeRepository beforeRepository,
             AfterRepository afterRepository) {
         this.jobRepository = jobRepository;
@@ -46,7 +48,7 @@ public class FirstBatch {
 
         System.out.println("fist job");
 
-        return new JobBuilder("first job", jobRepository)
+        return new JobBuilder("firstJob", jobRepository)
                 .start(firstStep())
                 .build();
 
@@ -84,6 +86,7 @@ public class FirstBatch {
 
                 AfterEntity afterEntity = new AfterEntity();
                 afterEntity.setUsername(item.getUsername());
+                afterEntity.setProcessedDate(LocalDate.now());
 
                 return afterEntity;
             }

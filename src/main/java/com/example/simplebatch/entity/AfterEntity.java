@@ -7,6 +7,8 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @Setter
@@ -17,4 +19,6 @@ public class AfterEntity {
     private Long id;
 
     private String username;
+
+    private LocalDate processedDate; // 배치 실행 날짜
 }
