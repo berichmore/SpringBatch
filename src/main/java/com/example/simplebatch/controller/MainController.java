@@ -7,6 +7,7 @@ import org.springframework.batch.core.job.parameters.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 
 import org.springframework.batch.core.launch.JobOperator;
+import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,11 +21,15 @@ public class MainController {
 
     private final JobOperator jobOperator;
     private final Job firstJob;
+    private final JobRepository jobRepository;
+    private final Job secondJob;
 
-    public MainController(JobLauncher jobLauncher, JobOperator jobOperator, Job firstJob) {
+    public MainController(JobLauncher jobLauncher, JobOperator jobOperator, Job firstJob, JobRepository jobRepository, Job secondJob) {
         this.jobLauncher = jobLauncher;
         this.jobOperator = jobOperator;
         this.firstJob = firstJob;
+        this.jobRepository = jobRepository;
+        this.secondJob = secondJob;
     }
 
     @GetMapping("/first")
@@ -38,5 +43,18 @@ public class MainController {
         // JobRegistry에 등록되어 있는 firstJob이라는 Bean으로 적의해둔 이름을 들고오면 됨
 
         return "ok";
+    }
+
+    @GetMapping("/second")
+    public String secondApi(@RequestParam("value") String value) throws Exception {
+
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addString("date", value)
+                .toJobParameters();
+
+
+        jobLauncher.run(secondJob, jobParameters);
+
+        return "secondJobok";
     }
 }

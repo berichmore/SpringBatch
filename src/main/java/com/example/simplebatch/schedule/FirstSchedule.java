@@ -19,7 +19,7 @@ public class FirstSchedule {
 
     private final Job firstJob;
 
-    public FirstSchedule(JobLauncher jobLauncher, JobLauncher jobLauncher1, Job firstJob) {
+    public FirstSchedule(JobLauncher jobLauncher, Job firstJob) {
         this.jobLauncher = jobLauncher;
         this.firstJob = firstJob;
     }
@@ -34,19 +34,19 @@ public class FirstSchedule {
     │     └─ 분 (0-59)
     └─ 초 (0-59)
      */
-    @Scheduled(cron = "10 0 0  * * *",zone = "Asia/Seoul")
-    public void runFirstJob() throws Exception{
-
-        System.out.println("first schedule start");
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String date = dateFormat.format(new Date());
-
-        JobParameters jobParameters = new JobParametersBuilder()
-                .addString("date", date)
-                .toJobParameters();
-
-        jobLauncher.run(firstJob, jobParameters);
-
-    }
+//    @Scheduled(cron = "10 0 0  * * *",zone = "Asia/Seoul")
+//    public void runFirstJob() throws Exception{
+//
+//        System.out.println("first schedule start");
+//
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        String date = dateFormat.format(new Date());
+//
+//        JobParameters jobParameters = new JobParametersBuilder()
+//                .addString("date", date)
+//                .toJobParameters();
+//
+//        jobLauncher.run(firstJob, jobParameters);
+//
+//    }
 }
